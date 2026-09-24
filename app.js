@@ -57,9 +57,13 @@ function renderHome() {
 }
 
 function showPeople() {
-  const q = (renderHome.q || "").trim().toLowerCase();
-  const list = q ? D.people.filter(p => p.name.toLowerCase().includes(q)) : D.people;
-  $("#people").innerHTML = list.map(personCard).join("") || `<div class="empty">No one by that name.</div>`;
+  const q = (renderHome.q || "").trim();
+  const { exact, close } = findPeople(D.people, q);
+  let html = exact.map(personCard).join("");
+  if (close.length)
+    html += `<div class="note">${exact.length ? "Similar names" : `No exact match for “${esc(q)}” - did you mean`}</div>` +
+            close.map(personCard).join("");
+  $("#people").innerHTML = html || `<div class="empty">No one by that name.</div>`;
 }
 
 function renderPerson(id) {

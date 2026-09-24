@@ -282,10 +282,12 @@ document.getElementById("fit").addEventListener("click", () => {
   if (small()) { panel.classList.remove("open"); ptoggle.textContent = "Options"; ptoggle.setAttribute("aria-expanded", false); }
 });
 document.getElementById("find").addEventListener("input", e => {
-  const q = e.target.value.trim().toLowerCase();
+  const q = e.target.value.trim();
   if (!q) return showInfo(null);
-  const n = nodes.find(x => x.name.toLowerCase().startsWith(q)) || nodes.find(x => x.name.toLowerCase().includes(q));
-  if (n) { centreOn(n, Math.max(scale, 0.9)); showInfo(n); }
+  const { exact, close } = findPeople(D.people, q);
+  const lq = q.toLowerCase();
+  const p = exact.find(x => x.name.toLowerCase().startsWith(lq)) || exact[0] || close[0];   // typos land on the nearest name
+  if (p) { const n = nodeById[p.id]; centreOn(n, Math.max(scale, 0.9)); showInfo(n); }
 });
 document.getElementById("find").addEventListener("keydown", e => { if (e.key === "Enter") e.target.blur(); });
 
