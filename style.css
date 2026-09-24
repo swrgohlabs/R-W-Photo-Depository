@@ -145,11 +145,6 @@ header.top nav button.on { border-color: var(--gold); color: var(--gold); }
 #box .names { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
 #box .names a { text-decoration: none; }
 
-#toast {
-  position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%); z-index: 60;
-  background: var(--panel2); border: 1px solid var(--line); border-radius: 999px;
-  padding: 11px 22px; display: none; box-shadow: var(--shadow);
-}
 footer { color: var(--dim); font-size: 13px; text-align: center; padding: 30px 20px 60px; }
 
 @media (max-width: 640px) {

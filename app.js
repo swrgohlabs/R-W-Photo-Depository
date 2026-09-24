@@ -13,17 +13,11 @@ function avatar(p, cls = "") {
                 : `<div class="avatar ${cls}">${esc(initials)}</div>`;
 }
 
-function toast(msg, ms = 3000) {
-  const t = $("#toast");
-  t.textContent = msg; t.style.display = "block";
-  clearTimeout(toast.t); toast.t = setTimeout(() => t.style.display = "none", ms);
-}
-
 // full-quality originals live on Google Drive: one file per photo, one folder per person
 const driveFile = g => `https://drive.usercontent.google.com/download?id=${g}&export=download`;
 const driveFolder = g => g ? `https://drive.google.com/drive/folders/${g}` : D.drive;
 const driveBtn = p =>
-  `<a href="${driveFolder(p.g)}" target="_blank" rel="noopener" title="Original film scans, full resolution"><button>Full quality on Google Drive ↗</button></a>`;
+  `<a href="${driveFolder(p.g)}" target="_blank" rel="noopener" title="Original film scans, full resolution"><button class="gold">Full quality on Google Drive ↗</button></a>`;
 
 /* ---------- views ---------- */
 
@@ -80,7 +74,6 @@ function renderPerson(id) {
         <h2>${esc(p.name)}</h2>
         <div class="meta">${p.n} photo${p.n === 1 ? "" : "s"} · photographed with ${friends.length} other${friends.length === 1 ? "" : "s"}</div>
         <div class="actions">
-          <button class="gold" id="dlall">Download all ${p.n} photos (web size)</button>
           ${driveBtn(p)}
           <a href="map.html#${p.id}"><button>See on the people map</button></a>
           <a href="#/"><button>&larr; Back to everyone</button></a>
@@ -92,7 +85,6 @@ function renderPerson(id) {
         <div class="nm">${esc(f.p.name)}</div><div class="ct">${f.c} together</div></a>`).join("")}</div>` : ""}
     <h2 class="section-title">${esc(p.name)}'s photos <small>click any photo to open it</small></h2>
     <div class="grid">${p.photos.map(shotTile).join("")}</div>`;
-  $("#dlall").addEventListener("click", () => downloadAll(p));
 }
 
 function renderAll() {
@@ -164,31 +156,6 @@ async function downloadOne(i) {
     saveBlob(await r.blob(), name);
   } catch {
     window.open(photoUrl(i), "_blank");   // file:// pages can't fetch; just open it
-  }
-}
-
-async function downloadAll(p) {
-  const btn = $("#dlall");
-  if (typeof JSZip === "undefined") { toast("Zip tool missing - open photos individually."); return; }
-  btn.disabled = true;
-  try {
-    const zip = new JSZip();
-    for (let k = 0; k < p.photos.length; k++) {
-      btn.textContent = `Packing ${k + 1} of ${p.photos.length}…`;
-      const i = p.photos[k];
-      const r = await fetch(photoUrl(i));
-      if (!r.ok) throw new Error("fetch failed");
-      zip.file(`${D.photos[i].f}.jpg`, await r.blob());
-    }
-    btn.textContent = "Zipping…";
-    const blob = await zip.generateAsync({ type: "blob" });   // JPEGs are already compressed
-    saveBlob(blob, `${p.name.replace(/[^\w\- ]+/g, "")} - R&W wedding.zip`);
-    toast(`Saved ${p.photos.length} photos.`);
-  } catch (e) {
-    toast("Couldn't build the zip here - try the online version, or save photos one by one.", 5000);
-  } finally {
-    btn.disabled = false;
-    btn.textContent = `Download all ${p.n} photos (web size)`;
   }
 }
 
