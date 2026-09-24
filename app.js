@@ -19,8 +19,11 @@ function toast(msg, ms = 3000) {
   clearTimeout(toast.t); toast.t = setTimeout(() => t.style.display = "none", ms);
 }
 
-const driveBtn = () =>
-  `<a href="${D.drive}" target="_blank" rel="noopener" title="Original film scans, full resolution"><button>Full quality on Google Drive ↗</button></a>`;
+// full-quality originals live on Google Drive: one file per photo, one folder per person
+const driveFile = g => `https://drive.usercontent.google.com/download?id=${g}&export=download`;
+const driveFolder = g => g ? `https://drive.google.com/drive/folders/${g}` : D.drive;
+const driveBtn = p =>
+  `<a href="${driveFolder(p.g)}" target="_blank" rel="noopener" title="Original film scans, full resolution"><button>Full quality on Google Drive ↗</button></a>`;
 
 /* ---------- views ---------- */
 
@@ -78,7 +81,7 @@ function renderPerson(id) {
         <div class="meta">${p.n} photo${p.n === 1 ? "" : "s"} · photographed with ${friends.length} other${friends.length === 1 ? "" : "s"}</div>
         <div class="actions">
           <button class="gold" id="dlall">Download all ${p.n} photos (web size)</button>
-          ${driveBtn()}
+          ${driveBtn(p)}
           <a href="map.html#${p.id}"><button>See on the people map</button></a>
           <a href="#/"><button>&larr; Back to everyone</button></a>
         </div>
@@ -127,6 +130,12 @@ function openBox(list, pos) {
 function showBox() {
   const i = lb.list[lb.pos];
   $("#boximg").src = photoUrl(i);
+  // this photo's original if it is on Drive yet, otherwise the whole Drive folder
+  const g = D.photos[i].g, a = $("#bdrive");
+  a.href = g ? driveFile(g) : D.drive;
+  if (g) a.removeAttribute("target"); else a.target = "_blank";
+  a.title = g ? "Original film scan, full resolution" : "Not on Drive yet as its own file - opens the Drive folder";
+  a.querySelector("button").textContent = g ? "Download full quality" : "Full quality on Drive ↗";
   $("#bnames").innerHTML = D.photos[i].p.map(id =>
     `<a href="#/p/${id}" class="pill">${esc(byId[id] ? byId[id].name : id)}</a>`).join("") ||
     `<span class="pill">nobody tagged</span>`;
@@ -214,7 +223,6 @@ window.addEventListener("hashchange", route);
 if (window.DATA) {
   D = window.DATA;
   D.people.forEach(p => byId[p.id] = p);
-  $("#bdrive").href = D.drive;
   $("#footstats").innerHTML =
     `${D.people.length} people · ${D.photos.length} photos · ` +
     `<a href="${D.drive}" target="_blank" rel="noopener">full-quality originals on Google Drive</a>`;
