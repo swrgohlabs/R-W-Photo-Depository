@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>R&amp;W Photo Depository · film photos</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="The film camera photos from Ryan &amp; Wanting's wedding, sorted by face. Film photos only.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📷</text></svg>">
+</head>
+<body>
+<header class="top">
+  <div class="inner">
+    <a class="brand" href="#/" title="Back to the home page">
+      <span class="mark">R&amp;W<span class="long"> Photo Depository</span></span>
+      <span class="sub">12 September 2026 · film photos only</span>
+    </a>
+    <nav>
+      <a href="#/" data-nav="home"><button>Home</button></a>
+      <a href="#/all" data-nav="all"><button>All photos</button></a>
+      <a href="map.html" data-nav="map"><button>People map</button></a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap" id="view"></main>
+
+<footer>
+  Film camera photos only · scanned, sorted by face, and put here for you.<br>
+  <span id="footstats"></span>
+</footer>
+
+<div id="box">
+  <div class="stage"><img id="boximg" alt=""></div>
+  <button class="arrow prev" id="bprev" aria-label="Previous">‹</button>
+  <button class="arrow next" id="bnext" aria-label="Next">›</button>
+  <div class="bar">
+    <div class="btns">
+      <button class="outline" id="bdl">Download (web size)</button>
+      <a id="bdrive" href="#" target="_blank" rel="noopener" title="Original film scans, full resolution"><button class="gold">Full quality ↗</button></a>
+      <button id="bclose">Close</button>
+    </div>
+    <span class="names" id="bnames"></span>
+  </div>
+</div>
+<div id="toast"></div>
+
+<script src="data.js"></script>
+<script src="jszip.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
