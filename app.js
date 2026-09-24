@@ -37,8 +37,6 @@ function shotTile(i) {
 }
 
 function renderHome() {
-  const q = (renderHome.q || "").trim().toLowerCase();
-  const list = q ? D.people.filter(p => p.name.toLowerCase().includes(q)) : D.people;
   $("#view").innerHTML = `
     <section class="hero">
       <div class="kicker">Film camera photos only</div>
@@ -46,12 +44,22 @@ function renderHome() {
       <p>These are the photos shot on film at Ryan &amp; Wanting's wedding, scanned and sorted by face.
          Other photos from the day aren't here.</p>
       <p>Pick your name to see the ones you are in - then hop across to the people you were photographed with.</p>
-      <div class="searchbar"><input type="search" id="q" placeholder="Search your name…" value="${esc(renderHome.q || "")}" autocomplete="off"></div>
+      <div class="searchbar"><input type="search" id="q" placeholder="Search your name…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search"></div>
     </section>
     <h2 class="section-title">Everyone <small>${D.people.length} people · most photographed first</small></h2>
-    <div class="people">${list.map(personCard).join("") || `<div class="empty">No one by that name.</div>`}</div>`;
+    <div class="people" id="people"></div>`;
+  // only the list below is redrawn while typing, so the box keeps its cursor and keyboard
   const box = $("#q");
-  box.addEventListener("input", () => { renderHome.q = box.value; renderHome(); $("#q").focus(); });
+  box.value = renderHome.q || "";
+  box.addEventListener("input", () => { renderHome.q = box.value; showPeople(); });
+  box.addEventListener("keydown", e => { if (e.key === "Enter") box.blur(); });
+  showPeople();
+}
+
+function showPeople() {
+  const q = (renderHome.q || "").trim().toLowerCase();
+  const list = q ? D.people.filter(p => p.name.toLowerCase().includes(q)) : D.people;
+  $("#people").innerHTML = list.map(personCard).join("") || `<div class="empty">No one by that name.</div>`;
 }
 
 function renderPerson(id) {
